@@ -32,12 +32,41 @@ public class QueryExecutor {
     }
 
     public boolean loginUser(User user) throws SQLException {
+        boolean success = checkUserPassword(user);
+        if(success) {
+            this.updateAccountLastLoginDate(user);
+        }
+        return success;
+    }
 
-        // TODO: actually test if the password is correct...
+    public boolean checkUserPassword(User user) throws SQLException {
 
+        // user is sent by client, we want to check,
+        // if the password for this username is correct.
 
         PreparedStatement ps = manager.getConnection().prepareStatement(
-                Command.UPDATE_USER_LOGIN_DATE.query(
+                Command.GET_USER.query(
+                        manager.getData().getDatabase()
+                )
+        );
+
+        ps.setString(1, user.getUsername());
+        ResultSet resultSet = ps.executeQuery();
+
+        if(resultSet.next()) {
+
+            String salt = resultSet.getString("salt");
+            String password = resultSet.getString("password");
+
+            user.setSalt(salt);
+            return user.hash().equalsIgnoreCase(password);
+        }
+        return false;
+    }
+
+    public boolean updateAccountLastLoginDate(User user) throws SQLException {
+        PreparedStatement ps = manager.getConnection().prepareStatement(
+                Command.LOGIN.query(
                         manager.getData().getDatabase()
                 )
         );
@@ -69,7 +98,7 @@ public class QueryExecutor {
 
     public Integer getUserId(User user) throws SQLException {
         PreparedStatement ps = manager.getConnection().prepareStatement(
-                Command.GET_USER_ID.query(
+                Command.GET_USER.query(
                         manager.getData().getDatabase()
                 )
         );

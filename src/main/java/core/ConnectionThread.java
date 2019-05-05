@@ -71,12 +71,8 @@ public class ConnectionThread extends Thread {
                     Command command = user.getCommand();
 
                     switch (command) {
-                        case UPDATE_USER_LOGIN_DATE:
+                        case LOGIN:
                             success = executor.loginUser(user);
-
-                            // if the login process was successful,
-                            // then we know that the user exists and
-                            // we should cache the user id for future use.
                             if(success) { userId = executor.getUserId(user); }
                             break;
                         case CREATE_USER:
@@ -125,7 +121,7 @@ public class ConnectionThread extends Thread {
             }
 
             // save cpu cycles
-            try { Thread.sleep(250); }
+            try { Thread.sleep(1000); }
             catch (InterruptedException e) { e.printStackTrace(); }
         }
     }

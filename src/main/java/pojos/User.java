@@ -11,6 +11,10 @@ public class User extends BaseMessage {
     private String username, password, salt;
     private LocalDateTime creationDate, lastLoginDate;
 
+    public User(Command command) {
+        this.command = command;
+    }
+
     public User(
             Command command,
             String username, String password, String salt,

@@ -1,7 +1,14 @@
 package pojos;
 
 public enum Command {
-    UPDATE_USER_LOGIN_DATE {
+    GET_USER {
+        @Override
+        public String query(String db) {
+            return "SELECT * FROM " + db + ".users " +
+                    "WHERE username = ?";
+        }
+    },
+    LOGIN {
         @Override
         public String query(String db) {
             return "UPDATE " + db + ".users " +
@@ -36,12 +43,6 @@ public enum Command {
         public String query(String db) {
             return "DELETE FROM " + db + ".users " +
                     "WHERE username = ?";
-        }
-    },
-    GET_USER_ID {
-        @Override
-        public String query(String db) {
-            return "SELECT id FROM " + db + ".users WHERE username = ?";
         }
     }
     ;
